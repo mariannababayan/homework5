@@ -1,0 +1,138 @@
+<canvas id='canvas' width=900 height = 500> </canvas>
+<script>
+ const canvas = document.getElementById('canvas');
+ const ctx = canvas.getContext ('2d')
+
+ const backgroundImg = new Image();
+ backgroundImg.src = "http://gamefroot.com/wp-content/files/2012/05/desert.png";
+
+ const floorY = canvas.height - 180;
+
+ const badGuysImg = new Image ();
+ badGuysImg.src = "https://media.nintendo.com/nintendo/bin/7SIcMSzb_JT6GUv7XRr80-dDQ1PVS7l3/ajq6yUI0CwPsclt4NQeSlVSlsq7HEScS.png";
+ const badGuys2Img = new Image ();
+ badGuys2Img.src = 'https://vignette3.wikia.nocookie.net/fictionalcrossover/images/e/ea/Naruto.png/revision/latest?cb=20140828004157';
+ const badGuys3Img = new Image ();
+ badGuys3Img.src = 'http://icons.veryicon.com/png/Kids/Disney/tarzan.png';
+ const ninjaImg = new Image();
+ ninjaImg.src = 'https://image.spreadshirtmedia.com/image-server/v1/designs/1003216399,width=178,height=178/cute-ninja.png'
+
+ const gameData = {
+   ninja: {
+     x: 100,
+     y: floorY,
+     img: ninjaImg,
+     width: 150,
+     height: 170,
+     xDelta: 0,
+     yDelta: 0
+   },
+
+   badGuys:  {
+     x: 550,
+     y: floorY +10,
+     img: badGuysImg,
+     width: 80,
+     height: 120,
+     xDelta: 1,
+     yDelta: 1
+   },
+   badGuys2:  {
+     x: 280,
+     y: floorY +20,
+     img: badGuys2Img,
+     width: 80,
+     height: 120,
+     xDelta: 1,
+     yDelta: 1
+   },
+   badGuys3:  {
+    x: 10,
+    y: floorY +30,
+    img: badGuys3Img,
+    width: 80,
+    height: 120,
+    xDelta: 1,
+    yDelta: 1
+  }
+};
+
+const maxJumpHeight = floorY - gameData.ninja.height * 1;
+
+const draw = function () {
+  ctx.drawImage(backgroundImg, 0, 0, canvas.width, canvas.height-2);
+
+  const ninja = gameData.ninja;
+  ctx.drawImage(ninja.img, ninja.x, ninja.y, ninja.width, ninja.height);
+
+  const badGuy = gameData.badGuys;
+  ctx.drawImage(badGuy.img, badGuy.x, badGuy.y, badGuy.width, badGuy.height);
+
+  const badGuy2 = gameData.badGuys2;
+  ctx.drawImage(badGuy2.img, badGuy2.x, badGuy2.y, badGuy2.width, badGuy2.height);
+
+  const badGuy3 = gameData.badGuys3;
+  ctx.drawImage(badGuy3.img, badGuy3.x, badGuy3.y, badGuy3.width, badGuy3.height);
+};
+
+
+const updateData = function() {
+  const ninja = gameData.ninja;
+  if (ninja.yDelta !== 0 ) {
+   ninja.y = ninja.y - ninja.yDelta;
+   if(ninja.y <= maxJumpHeight) {
+     ninja.yDelta = (-ninja.yDelta);
+   } else if (ninja.y > floorY) {
+    ninja.y = floorY;
+    ninja.yDelta = 0;
+  }
+}
+
+const badGuy = gameData.badGuys;
+const badGuy2 = gameData.badGuys2;
+};
+
+const loop = function() {
+  draw();
+  updateData();
+  requestAnimationFrame(loop);
+};
+loop();
+
+const leftKey = 37;
+const upKey = 38;
+const rightKey = 39;
+const downKey = 40;
+
+document.addEventListener('keydown', function(event) {
+  const ninja = gameData.ninja;
+  const badGuy = gameData.badGuys;
+  const badGuy2 = gameData.badGuys2;
+  const badGuy3 = gameData.badGuys3;
+
+  if(event.keyCode === rightKey) {
+
+    ninja.x = ninja.x + 10;
+    if(ninja.x >= canvas.width-ninja.width) {
+     ninja.x = 0;
+   };
+
+ }else if (event.keyCode === leftKey) {
+  ninja.x = ninja.x - 10;}
+
+  if(ninja.x <= 0) {
+    ninja.x = canvas.width-ninja.width;
+
+  } else if (event.keyCode === upKey) {
+    if(ninja.yDelta === 0) {
+      ninja.yDelta = 3;
+      ninja.y = ninja.y - ninja.yDelta;
+    }
+  }
+  if(ninja.x === badGuy.x || ninja.y === badGuy.y || ninja.x === badGuy2.x || ninja.y === badGuy2.y || ninja.x === badGuy3.x ||ninja.y === badGuy3.y){
+    alert("GAME OVER ");
+  }
+    
+}, false);
+
+</script>

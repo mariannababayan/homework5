@@ -1,0 +1,88 @@
+//random rectangles
+
+const canvas = document.querySelector('canvas');
+const context = canvas.getContext("2d");
+
+
+ const colors= ['GREEN','NAVY','LIME','YELLOW','ORANGE','RED','PURPLE','AQUA','MAROON'];
+ 
+
+ const rand = function(num) {
+	return Math.floor(Math.random() * num) + 1;
+   };
+  const createPoints=function(count, Canvaswidth, Canvasheight){
+    const arr = [];
+    const helper=function(n){
+      if(n===count){
+        return ;
+    }
+      arr[n]={ x : rand(Canvaswidth-30),
+               y :  rand(Canvasheight-30),
+              width: 30,
+              height: 30,
+              color : colors[rand(9)-1],
+              xDelta : 1,
+              yDelta : 1,
+             },
+          n=n+1;
+          helper(n);
+		}
+    helper(0);
+    
+    return arr;
+  
+  }
+
+  console.log(createPoints(10,canvas.width,canvas.height));
+
+   
+  const sample = createPoints(10, canvas.width, canvas.height);
+
+  const render = function() {
+    context.clearRect(0,0, canvas.width, canvas.height);
+    const drawhelper = function(arr, i) {
+      if(i === arr.length) {
+        return;
+      }
+      
+      context.fillStyle = arr[i].color;
+      context.fillRect(arr[i].x, arr[i].y, arr[i].width, arr[i].height);
+      drawhelper(arr, i+1);
+    };
+    drawhelper(sample, 0);
+  };
+
+  //draw();
+
+  const updateData = function() {
+    const updateEvery = function(arr, m){
+      if(m === arr.length) {
+        return;
+      }
+      
+      if(arr[m].x >= canvas.width-arr[m].width || arr[m].x<=0){
+        arr[m].xDelta = -arr[m].xDelta;
+    arr[m].color = colors[rand(13)-1];
+      }
+      
+      if(arr[m].y >= canvas.height-arr[m].height || arr[m].y<=0){
+        arr[m].yDelta = -arr[m].yDelta;
+    arr[m].color = colors[rand(13)-1];
+      }
+      
+      arr[m].x = arr[m].x + arr[m].xDelta;
+      arr[m].y = arr[m].y + arr[m].yDelta;
+      updateEvery(arr, m+1);
+    };
+    updateEvery(sample, 0)
+  };
+
+
+  const loop = function(){
+    
+    render();
+    updateData();
+    window.requestAnimationFrame(loop);
+  };
+  
+  loop();
